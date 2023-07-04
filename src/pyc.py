@@ -4,7 +4,7 @@ from compiler import Compiler
 from utils import ArgParser
 
 def main():
-	argparser = ArgParser("pyac" , description="PyASM Compiler")
+	argparser = ArgParser("pyc" , description="PyC Compiler")
 	argparser.add_argument("file", type=str)
 
 	args = argparser.parse_args()
