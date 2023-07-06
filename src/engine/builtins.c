@@ -8,6 +8,7 @@
 
 PyCReturnType PyC_print_impl(PyCArgs);
 PyC_Type func_obj_notptr;
+PyC_Type NotImplementedType; // this is literally not implemented
 
 void init_PyBuiltins_H(void)
 {
@@ -93,31 +94,11 @@ PyC_Type func_obj_notptr = {
     "PyC internal class [builtin func obj]",
     object_new,
     func_obj_init,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        func_obj_call
+    .__call__=func_obj_call
+};
+
+PyC_Object PyBuiltins_NotImplemented = {
+    &NotImplementedType,
+    NULL,
+    NULL
 };

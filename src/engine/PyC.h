@@ -1,3 +1,4 @@
+#include "../hashmap/hashmap.h"
 #include "symtab.h"
 #include "pyobj.h"
 #include "str.h"
@@ -9,5 +10,8 @@
 #define PyC_H
 
 void InitPythonC(void);
+void QuitPythonC(void);
+
+hashmap __main__mod_symtab;
 
 #endif

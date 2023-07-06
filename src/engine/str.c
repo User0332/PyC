@@ -65,8 +65,12 @@ PyCReturnType str_repr(PyCArgs)
 
 void init_PyStr_H(void)
 {
-    
-    str_notptr.symtab = get_default_type_table();
+    str_notptr.symtab = get_default_type_table(&str_type_notptr);
+}
+
+void quit_PyStr_H(void)
+{
+    hashmap_destroy(&str_notptr.symtab);
 }
 
 PyC_Object* pystr_from_c_str(char* str)

@@ -1,10 +1,11 @@
 #include "constants.h"
+#include "../hashmap/hashmap.h"
 
 #ifndef PYOBJ_H
 
 #define PYOBJ_H
 
-typedef struct symbol_node symtab_node;
+typedef struct hashmap_s hashmap;
 
 typedef struct PyC_Type_s {
     char* name;
@@ -86,7 +87,7 @@ typedef struct PyC_Type_s {
 typedef struct PyC_Object_s {
     PyC_Type* type;
     void* innervalue;
-    symtab_node* symtab;
+    hashmap symtab;
 } PyC_Object;
 
 PyC_Object object_notptr;
@@ -97,6 +98,7 @@ PyC_Type type_type_notptr;
 
 
 void init_PyObject_H(void);
+void quit_PyObject_H(void);
 PyCReturnType object_init(PyCArgs);
 PyCReturnType object_new(PyCArgs);
 

@@ -13,5 +13,7 @@ int main(void)
         (PyC_Object* []) { &PyBuiltins_print, mystr, 0 }
     );
 
+    QuitPythonC();
+
     return 0;
 }

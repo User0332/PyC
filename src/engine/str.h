@@ -9,5 +9,6 @@ PyC_Object str_notptr;
 
 PyC_Object* pystr_from_c_str(char* str);
 void init_PyStr_H(void);
+void quit_PyStr_H(void);
 
 #endif

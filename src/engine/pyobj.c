@@ -87,39 +87,13 @@ void init_PyObject_H(void)
         "type",
         object_new,
         type_init,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        type_call
+        .__call__=type_call
     };
 
     type_obj_notptr = (PyC_Object) {
         &type_type_notptr,
         &type_type_notptr,
-        get_default_type_table()
+        get_default_type_table(&type_type_notptr)
     };
 
     object_type_notptr = (PyC_Type) { // we need to impl all these methods later
@@ -131,10 +105,12 @@ void init_PyObject_H(void)
     object_notptr = (PyC_Object) {
         &type_type_notptr,
         &object_type_notptr,
-        get_default_type_table()
+        get_default_type_table(&object_type_notptr)
     };
 }
 
-
-
-
+void quit_PyObject_H(void)
+{
+    hashmap_destroy(&type_obj_notptr.symtab);
+    hashmap_destroy(&object_notptr.symtab);
+}
