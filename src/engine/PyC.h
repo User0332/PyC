@@ -1,6 +1,7 @@
 #include "../hashmap/hashmap.h"
 #include "symtab.h"
 #include "pyobj.h"
+#include "pyexc.h"
 #include "str.h"
 #include "constants.h"
 #include "builtins.h"

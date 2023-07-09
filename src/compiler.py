@@ -25,10 +25,10 @@ int main()
 		self.saved_stackvars: set[str] = set()
 		self.stackvars: list[str] = []
 
-	def gen_stackvar(self) -> str:
+	def gen_stackvar(self, args: int=0) -> str:
 		var = f"sv{len(self.stackvars)}"
 
-		self.stackvars.append(var)
+		self.stackvars.append(var if not args else var+f"[{args}]")
 
 		return var
 
@@ -133,15 +133,12 @@ int main()
 		self.code+=";\n\t"
 
 		if type(node.op) is Add:
-			self.code+=f"if (working_expr = {left}->type->__call__((PyC_Object* []) {{ {left}, right }}"
-
-			for arg in node.args:
-				self.visit(arg)
-				self.code+=", "
-
-			self.code+="0 })"		
-			return # unimpled
-		else: # switch dict for a sym lookup (with some NotImplemented checks for two-way ops (such as ==))
+			self.code+=f"""if ((working_expr = {left}->type->__add__((PyC_Object* []) {{ {left}, {right}, 0 }})) == &PyBuiltins_NotImplemented) {{
+		if ((working_expr = {right}->type->__radd__((PyC_Object* []) {{ {right}, {left}, 0 }})) == &PyBuiltins_NotImplemented) {{
+			raise_cstr("TypeError: cannot perform addition between objects of type %s and %s");
+		}}
+	}}\n\t"""
+		else: pass# switch dict for a sym lookup (with some NotImplemented checks for two-way ops (such as ==))
 	
 	def visit_BitAnd(self, node: BitAnd) -> Any:
 		return # unimpled
@@ -163,19 +160,22 @@ int main()
 
 	def visit_Call(self, node: Call) -> Any:
 		stackvar = self.gen_stackvar()
+		argsarr = self.gen_stackvar(args=len(node.args)+2) # find more reliable usage later, (ex. we won't know the arg length for unpacked iterables)
 
 		self.code+=f"{stackvar} = "
 
 		self.visit(node.func)
 		self.code+=";\n\t"
 
-		self.code+=f"working_expr = {stackvar}->type->__call__((PyC_Object* []) {{ {stackvar}, "
+		self.code+=f"{argsarr}[0] = {stackvar};\n\t"
 
-		for arg in node.args:
+		for i, arg in enumerate(node.args, start=1):
 			self.visit(arg)
-			self.code+=", "
+			self.code+=f"{argsarr}[{i}] = working_expr;\n\t"
 
-		self.code+="0 })"
+		self.code+=f"{argsarr}[{len(node.args)+1}] = 0;\n\t" # ^^^^^^ see above comment -- this line also uses len(node.args)
+
+		self.code+=f"working_expr = {stackvar}->type->__call__({argsarr})"
 
 	def visit_ClassDef(self, node: ClassDef) -> Any:
 		return # unimpled
