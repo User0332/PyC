@@ -4,11 +4,14 @@
 
 #define PyC_STR_H
 
-PyC_Type str_type_notptr;
-PyC_Object str_notptr;
+extern PyC_Type str_type_notptr;
+extern PyC_Object str_notptr;
 
-PyC_Object* pystr_from_c_str(char* str);
-void init_PyStr_H(void);
-void quit_PyStr_H(void);
+extern const char* length_key;
+extern size_t key_length;
+
+extern PyC_Object* pystr_from_c_str(char* str, size_t len);
+extern void init_PyStr_H(void);
+extern void quit_PyStr_H(void);
 
 #endif

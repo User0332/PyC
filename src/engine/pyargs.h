@@ -6,6 +6,6 @@
 
 typedef struct PyC_Object_s PyC_Object;
 
-int arglen(PyCArgs);
+extern int arglen(PyCArgs);
 
 #endif

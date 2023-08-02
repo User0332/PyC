@@ -10,7 +10,7 @@
 
 typedef struct hashmap_s hashmap;
 
-hashmap get_default_table(void);
-hashmap get_default_type_table(PyC_Type* type);
+extern hashmap get_default_table(void);
+extern hashmap get_default_type_table(PyC_Type* type);
 
 #endif

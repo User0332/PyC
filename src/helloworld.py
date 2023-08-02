@@ -1,3 +1,3 @@
 print(
-    "Hello, \0" + "World!"
+    "Hel\0lo, " + "World!"
 )

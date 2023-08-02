@@ -10,9 +10,9 @@
 
 #define PyC_H
 
-void InitPythonC(void);
-void QuitPythonC(void);
+extern void InitPythonC(void);
+extern void QuitPythonC(void);
 
-hashmap __main__mod_symtab;
+extern hashmap __main__mod_symtab;
 
 #endif

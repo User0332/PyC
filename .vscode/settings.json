@@ -1,10 +1,17 @@
 {
     "python.linting.enabled": false,
     "files.associations": {
-        "pyc.h": "c",
-        "stdlib.h": "c",
-        "pyobj.h": "c",
-        "symtab.h": "c",
-        "constants.h": "c"
-    }
+		"*.pog": "pogscript",
+		"*.pyx": "python",
+		"*.uts": "javascript",
+		"*.pydict": "python",
+		"*.pg": "html",
+		"*.pgx": "xml",
+		"pyc.h": "c",
+		"stdlib.h": "c",
+		"pyobj.h": "c",
+		"symtab.h": "c",
+		"constants.h": "c",
+		"str.h": "c"
+	}
 }

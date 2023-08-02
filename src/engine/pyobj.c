@@ -20,10 +20,14 @@ PyCReturnType object_new(PyCArgs)
 
     PyC_Object* obj = malloc(sizeof (PyC_Object)); // TODO: add this to some garbage collecting mechanism
 
+	hashmap* symtab = malloc(sizeof(hashmap));
+
+	hashmap_create(5, symtab);
+
     *obj = (PyC_Object) {
         class_type,
         NULL,
-        NULL
+        *symtab
     };
 
     PyC_Object* init_args[len+1];
@@ -114,3 +118,8 @@ void quit_PyObject_H(void)
     hashmap_destroy(&type_obj_notptr.symtab);
     hashmap_destroy(&object_notptr.symtab);
 }
+
+PyC_Object object_notptr = { NULL };
+PyC_Type object_type_notptr = { NULL };
+PyC_Object type_obj_notptr = { NULL };
+PyC_Type type_type_notptr = { NULL };

@@ -6,13 +6,12 @@
 
 #define PYASM_BUILTINS_H
 
-PyC_Object PyBuiltins_object;
+extern PyC_Object PyBuiltins_object;
 
-PyC_Object PyBuiltins_print;
-PyC_Object PyBuiltins_None;
-PyC_Object PyBuiltins_NotImplemented;
+extern PyC_Object PyBuiltins_print;
+extern PyC_Object PyBuiltins_None;
+extern PyC_Object PyBuiltins_NotImplemented;
 
 void init_PyBuiltins_H(void);
-
 
 #endif

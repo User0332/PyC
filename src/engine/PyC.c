@@ -16,3 +16,5 @@ void QuitPythonC(void)
     quit_PyStr_H();
     quit_PyException_H();
 }
+
+hashmap __main__mod_symtab = { NULL };

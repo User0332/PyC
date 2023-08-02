@@ -72,6 +72,8 @@ PyCReturnType PyC_print_impl(PyCArgs) // don't worry about kwargs for now
     int len = arglen(args);
     int i;
 
+	int flush = 1; // have this be an arg later
+
     for (i=0; i<len; i++)
     {
         PyC_Object* strobj = args[i]->type->__str__(
@@ -79,12 +81,15 @@ PyCReturnType PyC_print_impl(PyCArgs) // don't worry about kwargs for now
         );
 
         char* str = strobj->innervalue;
+		int length = hashmap_get(&(strobj->symtab), length_key, key_length);
 
-        fputs(str, stdout);
+		fwrite(str, sizeof(char), length, stdout);
+
+		putc(' ', stdout); // this char will be 'sep'
     }
 
     putc('\n', stdout); // behavior may be modified by kwargs later
-    fflush(stdout);
+    if (flush) fflush(stdout);
 
 
     return NULL; // this should actually be `None` once impl.ed
@@ -102,3 +107,6 @@ PyC_Object PyBuiltins_NotImplemented = {
     NULL,
     NULL
 };
+
+PyC_Object PyBuiltins_object = { NULL };
+PyC_Object PyBuiltins_print = { NULL };

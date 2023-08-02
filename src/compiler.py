@@ -3,6 +3,53 @@ from _ast import AST, Add, And, AnnAssign, Assert, Assign, AsyncFor, AsyncFuncti
 from ast import AugLoad, AugStore, Bytes, Ellipsis, ExtSlice, Index, NameConstant, NodeVisitor, AST, Num, Param, Str, Suite, stmt
 from typing import Any
 
+def string_to_c(s, max_length = 140, unicode=False):
+    ret = []
+
+    # Try to split on whitespace, not in the middle of a word.
+    split_at_space_pos = max_length - 10
+    if split_at_space_pos < 10:
+        split_at_space_pos = None
+
+    position = 0
+    if unicode:
+        position += 1
+        ret.append('L')
+
+    ret.append('"')
+    position += 1
+    for c in s:
+        newline = False
+        if c == "\n":
+            to_add = "\\\n"
+            newline = True
+        elif ord(c) < 32 or 0x80 <= ord(c) <= 0xff:
+            to_add = "\\x%02x" % ord(c)
+        elif ord(c) > 0xff:
+            if not unicode:
+                raise ValueError("string contains unicode character but unicode=False")
+            to_add = "\\u%04x" % ord(c)
+        elif "\\\"".find(c) != -1:
+            to_add = "\\%c" % c
+        else:
+            to_add = c
+
+        ret.append(to_add)
+        position += len(to_add)
+        if newline:
+            position = 0
+
+        if split_at_space_pos is not None and position >= split_at_space_pos and " \t".find(c) != -1:
+            ret.append("\\\n")
+            position = 0
+        elif position >= max_length:
+            ret.append("\\\n")
+            position = 0
+
+    ret.append('"')
+
+    return "".join(ret)
+
 class Compiler(NodeVisitor):
 	def __init__(self, tree: AST):
 		self.ast = tree
@@ -188,7 +235,8 @@ int main()
 	
 	def visit_Constant(self, node: Constant) -> Any:
 		if type(node.value) is str:
-			self.code+=f"pystr_from_c_str({dumps(node.value)})"
+			length = len(node.value)
+			self.code+=f"pystr_from_c_str({string_to_c(node.value)}, {length})"
 	
 	def visit_Continue(self, node: Continue) -> Any:
 		return # unimpled

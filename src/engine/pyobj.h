@@ -90,16 +90,16 @@ typedef struct PyC_Object_s {
     hashmap symtab;
 } PyC_Object;
 
-PyC_Object object_notptr;
-PyC_Type object_type_notptr;
+extern PyC_Object object_notptr;
+extern PyC_Type object_type_notptr;
 
-PyC_Object type_obj_notptr;
-PyC_Type type_type_notptr;
+extern PyC_Object type_obj_notptr;
+extern PyC_Type type_type_notptr;
 
 
-void init_PyObject_H(void);
-void quit_PyObject_H(void);
-PyCReturnType object_init(PyCArgs);
-PyCReturnType object_new(PyCArgs);
+extern void init_PyObject_H(void);
+extern void quit_PyObject_H(void);
+extern PyCReturnType object_init(PyCArgs);
+extern PyCReturnType object_new(PyCArgs);
 
 #endif
