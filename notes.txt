@@ -1,0 +1,8 @@
+all kwargs must be passed in a dict because we might not know the names
+  - have all natively impled funcs (like print) use a hashmap
+  - have all python-defined funcs take in a hashmap but convert it to a dict within the func
+  - this will not increase runtime but will reduce it because the hashmap-dict conversion will be happening anyway, this just omits it when it is not necessary (e.g. when a pure C function is accessing kwargs)
+
+dunder methods have to be treated differently -- --
+ - the struct member version of the dunder must be a C function
+ - the symtab lookup (object form) of the dunder must be a function object

@@ -2,7 +2,7 @@
 
 #define PyC_GC_H
 
-#include "constants.h"
+#include "../constants.h"
 
 
 

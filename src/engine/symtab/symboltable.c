@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
-#include "pyobj.h"
-#include "builtins.h"
-#include "symtab.h"
-#include "../hashmap/hashmap.h"
+#include "../object/pyobj.h"
+#include "../builtins/builtins.h"
+#include "../symtab/symtab.h"
+#include "../../hashmap/hashmap.h"
 
 hashmap get_default_table(void)
 {

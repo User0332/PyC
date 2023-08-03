@@ -1,8 +1,8 @@
-#include "pyobj.h"
-
 #ifndef PyC_STR_H
 
 #define PyC_STR_H
+
+#include "../object/pyobj.h"
 
 extern PyC_Type str_type_notptr;
 extern PyC_Object str_notptr;

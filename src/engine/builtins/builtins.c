@@ -1,10 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "builtins.h"
-#include "pyobj.h"
-#include "pyargs.h"
-#include "str.h"
-#include "constants.h"
+#include "../object/pyobj.h"
+#include "../pyargs.h"
+#include "../str/str.h"
+#include "../constants.h"
 
 PyCReturnType PyC_print_impl(PyCArgs);
 PyC_Type func_obj_notptr;

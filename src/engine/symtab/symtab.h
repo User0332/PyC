@@ -1,5 +1,5 @@
-#include "pyobj.h"
-#include "../hashmap/hashmap.h"
+#include "../object/pyobj.h"
+#include "../../hashmap/hashmap.h"
 
 #ifndef PyC_SYMTAB_H
 

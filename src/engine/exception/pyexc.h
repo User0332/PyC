@@ -1,4 +1,4 @@
-#include "pyobj.h"
+#include "../object/pyobj.h"
 
 #ifndef PyC_PyException_H
 

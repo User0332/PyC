@@ -1,10 +1,10 @@
 #include "../hashmap/hashmap.h"
-#include "symtab.h"
-#include "pyobj.h"
-#include "pyexc.h"
-#include "str.h"
+#include "symtab/symtab.h"
+#include "object/pyobj.h"
+#include "exception/pyexc.h"
+#include "str/str.h"
+#include "builtins/builtins.h"
 #include "constants.h"
-#include "builtins.h"
 
 #ifndef PyC_H
 

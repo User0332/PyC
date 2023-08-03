@@ -1,8 +1,8 @@
 #include <stdlib.h>
-#include "constants.h"
-#include "pyobj.h"
-#include "symtab.h"
-#include "pyargs.h"
+#include "../constants.h"
+#include "../object/pyobj.h"
+#include "../symtab/symtab.h"
+#include "../pyargs.h"
 #include "str.h"
 
 const char* length_key = "length";

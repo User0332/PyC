@@ -12,6 +12,16 @@
 		"pyobj.h": "c",
 		"symtab.h": "c",
 		"constants.h": "c",
-		"str.h": "c"
+		"str.h": "c",
+		"*.xsd": "cpp",
+		"adapter": "cpp",
+		"collector.h": "c",
+		"nonetype.h": "c",
+		"pyexc.h": "c",
+		"pyargs.h": "c",
+		"builtins.h": "c",
+		"hashmap.h": "c",
+		"string.h": "c",
+		"pydict.h": "c"
 	}
 }

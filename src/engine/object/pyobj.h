@@ -1,5 +1,5 @@
-#include "constants.h"
-#include "../hashmap/hashmap.h"
+#include "../constants.h"
+#include "../../hashmap/hashmap.h"
 
 #ifndef PYOBJ_H
 

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "pyexc.h"
-#include "pyargs.h"
+#include "../pyargs.h"
 
 // TODO: Add checks for calloc and realloc fails
 

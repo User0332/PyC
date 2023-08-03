@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include "PyC.h"
-#include "pyargs.h"
+#include "../pyargs.h"
+#include "../PyC.h"
 #include "pyobj.h"
 
 PyCReturnType object_new(PyCArgs)

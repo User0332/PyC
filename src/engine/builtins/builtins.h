@@ -1,6 +1,6 @@
-#include "pyobj.h"
-#include "str.h"
-#include "NoneType.h"
+#include "../object/pyobj.h"
+#include "../str/str.h"
+#include "../None/NoneType.h"
 
 #ifndef PYASM_BUILTINS_H
 
