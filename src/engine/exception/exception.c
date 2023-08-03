@@ -15,7 +15,8 @@ void raise(PyC_Object* exc)
 {
     raise_cstr(
         exc->type->__str__(
-            (PyC_Object* []) { exc, 0 }
+            (PyC_Object* []) { exc, 0 },
+			NULL
         )->innervalue
     );
 }

@@ -34,7 +34,7 @@ PyCReturnType str_init(PyCArgs)
 
     PyC_Object* val = args[1];
 
-    *self = *(val->type->__str__((PyC_Object* []) {val, NULL}));
+    *self = *(val->type->__str__((PyC_Object* []) {val, NULL}, NULL));
 
     // TODO: RETURN NONETYPE NONE
 }
@@ -120,7 +120,8 @@ PyC_Object* pystr_from_c_str(char* str, size_t len)
 {
 
     PyC_Object* string = str_type_notptr.__new__(
-        (PyC_Object* []) {&str_notptr, NULL}
+        (PyC_Object* []) {&str_notptr, NULL},
+		NULL
     );
 
     string->innervalue = str;

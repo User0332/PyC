@@ -4,11 +4,25 @@
 #include "../symtab/symtab.h"
 #include "../constants.h"
 #include "../pyargs.h"
+#include "../builtins/builtins.h"
 #include "../../hashmap/hashmap.h"
 
-unsigned int pyhash(PyC_Object* obj)
+unsigned long long pyhash(PyC_Object* obj) // this function sucks and will return same hash for objects with two different symtabs (maybe once impled in Python, __hash__ should by default take symtabs into account)
 {
-	return 0;
+	unsigned long long hash = 0;
+
+	PyC_Object* hashargs[] = { obj, 0 };
+
+	PyC_Object* pyint = obj->type->__hash__(hashargs, NULL);
+
+	if (pyint == &PyBuiltins_NotImplemented) return NULL; // raise exc, cannot be hashed
+	
+	long long int cint = ((long long int (*)(PyC_Object*)) hashmap_get(&(pyint->symtab), "__as_c_int", strlen("__as_c_int")))(pyint); // __as_c_int() will throw the exc for us, as_c_int is a special func that takes in itself as an arg (not an arg buff)
+
+	hash^=(((unsigned long long) (obj->type))^PyC_PyHash_NUM1);
+	hash^=(cint^PyC_PyHash_NUM2);
+
+	return hash;
 }
 
 PyCReturnType dict_init(PyCArgs)
@@ -46,7 +60,7 @@ PyCReturnType dict_getitem(PyCArgs)
 
 	PyC_Object* key = args[1];
 
-	unsigned int hash = pyhash(key);
+	unsigned long long hash = pyhash(key);
 
 	PyC_Object* val = hashmap_get(self->innervalue, hash, sizeof(hash));
 
@@ -69,7 +83,7 @@ PyCReturnType dict_setitem(PyCArgs)
 
 	PyC_Object* key = args[1];
 
-	unsigned int hash = pyhash(key);
+	unsigned long long hash = pyhash(key);
 
 	PyC_Object* val = args[2];
 

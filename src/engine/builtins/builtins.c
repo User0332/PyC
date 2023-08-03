@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "builtins.h"
 #include "../object/pyobj.h"
 #include "../pyargs.h"
@@ -64,20 +65,58 @@ PyCReturnType func_obj_call(PyCArgs)
 
     PyCReturnType (*func)(PyCArgs) = args[0]->innervalue;
 
-    return func(callargs);
+    return func(callargs, kwargs);
 }
 
-PyCReturnType PyC_print_impl(PyCArgs) // don't worry about kwargs for now
+int print_iter_kwargs(void** ctx[], struct hashmap_element_s* elem)
+{
+	char** seenkw = (char**) ctx[0];
+	PyC_Object** kwvals = (PyC_Object**) ctx[1];
+
+	int len = arglen(seenkw);
+
+	if (in_seen_kw(seenkw, elem->key, len)) { return 1; } // raise exc
+
+	if (strcmp(elem->key, "sep") == 0) kwvals[0] = elem->data;
+	else if (strcmp(elem->key, "end") == 0) kwvals[1] = elem->data;
+	else if (strcmp(elem->key, "file") == 0) kwvals[2] = elem->data;
+	else if (strcmp(elem->key, "flush") == 0) kwvals[3] = elem->data;
+	else
+	{
+		return 1; // raise exc
+	}
+	
+	seenkw[len] = elem->key;
+	
+	return 0;
+}
+
+PyCReturnType PyC_print_impl(PyCArgs)
 {
     int len = arglen(args);
     int i;
 
-	int flush = 1; // have this be an arg later
+	char* seenkw[4] = { NULL, NULL, NULL, NULL };
+	PyC_Object* kwvals[4] = { pystr_from_c_str(" ", 1), pystr_from_c_str("\n", 1), NULL, NULL }; // last two are file and flush (using two unimpled types)
+
+	void** context[] = { &seenkw, &kwvals };
+
+	hashmap_iterate_pairs(kwargs, print_iter_kwargs, context);
+
+	char* sep = kwvals[0]->innervalue;
+	size_t seplen = hashmap_get(&(kwvals[0]->symtab), length_key, key_length);
+
+	char* end = kwvals[1]->innervalue;
+	size_t endlen = hashmap_get(&(kwvals[1]->symtab), length_key, key_length);
+
+	// PyIO file = kwvals[2]
+
+	int flush = 0; // kwvals[3]->innervalue;
 
     for (i=0; i<len; i++)
     {
         PyC_Object* strobj = args[i]->type->__str__(
-            (PyC_Object* []) { args[i], 0 }
+            (PyC_Object* []) { args[i], 0 }, NULL
         );
 
         char* str = strobj->innervalue;
@@ -85,12 +124,12 @@ PyCReturnType PyC_print_impl(PyCArgs) // don't worry about kwargs for now
 
 		fwrite(str, sizeof(char), length, stdout);
 
-		putc(' ', stdout); // this char will be 'sep'
+		if (i != (len-1)) fwrite(sep, sizeof(char), seplen, stdout); // this char will be 'sep'
     }
 
-    putc('\n', stdout); // behavior may be modified by kwargs later
-    if (flush) fflush(stdout);
-
+	fwrite(end, sizeof(char), endlen, stdout);
+   
+	if (flush) fflush(stdout);
 
     return NULL; // this should actually be `None` once impl.ed
 }

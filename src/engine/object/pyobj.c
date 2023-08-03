@@ -38,7 +38,7 @@ PyCReturnType object_new(PyCArgs)
 
     init_args[len] = NULL;
 
-    class_type->__init__(init_args);
+    class_type->__init__(init_args, kwargs);
 
     return obj;
 }
@@ -81,7 +81,7 @@ PyCReturnType type_call(PyCArgs)
 
     PyC_Type* init_type = class_obj->innervalue;
 
-    return init_type->__new__(args);
+    return init_type->__new__(args, kwargs);
 }
 
 void init_PyObject_H(void)

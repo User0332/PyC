@@ -71,6 +71,17 @@ int main()
 	"""
 		self.saved_stackvars: set[str] = set()
 		self.stackvars: list[str] = []
+		self.saved_hmaps: set[str] = set()
+		self.hmaps: list[str] = []
+
+	def gen_hmap(self):
+		var = f"hmap{len(self.hmaps)}"
+
+		self.hmaps.append(var)
+
+		self.code+=f"hashmap_create(5, &{var});\n\t"
+
+		return var
 
 	def gen_stackvar(self, args: int=0) -> str:
 		var = f"sv{len(self.stackvars)}"
@@ -84,6 +95,9 @@ int main()
 
 		for var in self.saved_stackvars:
 			stackvar_code+=f"PyC_Object* {var};\n\t"
+
+		for var in self.saved_hmaps:
+			stackvar_code+=f"hashmap {var};\n\t"
 
 		return stackvar_code
 
@@ -105,7 +119,11 @@ int main()
 			self.code+=";\n\t"
 			
 			for var in self.stackvars: self.saved_stackvars.add(var)
+			for var in self.hmaps:
+				self.saved_hmaps.add(var)
+				self.code+=f"hashmap_destroy(&{var});\n\t"
 
+			self.hmaps.clear()
 			self.stackvars.clear() # add this to function-level stmts once impled
 		
 	def generic_visit(self, node: AST):
@@ -207,6 +225,7 @@ int main()
 
 	def visit_Call(self, node: Call) -> Any:
 		stackvar = self.gen_stackvar()
+		kwargsmap = self.gen_hmap()
 		argsarr = self.gen_stackvar(args=len(node.args)+2) # find more reliable usage later, (ex. we won't know the arg length for unpacked iterables)
 
 		self.code+=f"{stackvar} = "
@@ -222,7 +241,15 @@ int main()
 
 		self.code+=f"{argsarr}[{len(node.args)+1}] = 0;\n\t" # ^^^^^^ see above comment -- this line also uses len(node.args)
 
-		self.code+=f"working_expr = {stackvar}->type->__call__({argsarr})"
+		for kwarg in node.keywords:
+			name = kwarg.arg
+			val = kwarg.value
+
+			self.visit(val)
+
+			self.code+=f"hashmap_put(&{kwargsmap}, {string_to_c(name)}, {len(name)}, working_expr);\n\t"
+
+		self.code+=f"working_expr = {stackvar}->type->__call__({argsarr}, &{kwargsmap})"
 
 	def visit_ClassDef(self, node: ClassDef) -> Any:
 		return # unimpled
@@ -236,7 +263,7 @@ int main()
 	def visit_Constant(self, node: Constant) -> Any:
 		if type(node.value) is str:
 			length = len(node.value)
-			self.code+=f"pystr_from_c_str({string_to_c(node.value)}, {length})"
+			self.code+=f"working_expr = pystr_from_c_str({string_to_c(node.value)}, {length});\n\t"
 	
 	def visit_Continue(self, node: Continue) -> Any:
 		return # unimpled
